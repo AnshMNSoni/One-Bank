@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking App - Transactions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Banking App</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('transactions.accounts_list') }}">Accounts</a></li>
+                    <li><a href="{{ url_for('transactions.transactions_list') }}" class="active">Transactions</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('auth.account') }}">Account Settings</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="transactions-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Transactions</h2>
+                    <div class="header-actions">
+                        <a href="{{ url_for('transactions.new_transaction') }}" class="btn btn-primary">New Transaction</a>
+                    </div>
+                </div>
+                
+                <div class="transactions-filters">
+                    <form action="{{ url_for('transactions.transactions_list') }}" method="get" class="filters-form">
+                        <div class="form-group">
+                            <label for="account">Account</label>
+                            <select id="account" name="account">
+                                <option value="">All Accounts</option>
+                                {% for account in accounts %}
+                                    <option value="{{ account.id }}">{{ account.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select id="type" name="type">
+                                <option value="">All Types</option>
+                                <option value="deposit">Deposit</option>
+                                <option value="withdrawal">Withdrawal</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="payment">Payment</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date_from">From Date</label>
+                            <input type="date" id="date_from" name="date_from">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date_to">To Date</label>
+                            <input type="date" id="date_to" name="date_to">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-secondary">Filter</button>
+                            <button type="reset" class="btn btn-text">Reset</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="transactions-table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>From Account</th>
+                                <th>To Account</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions.items %}
+                                <tr>
+                                    <td>{{ transaction.date.strftime('%b %d, %Y') }}</td>
+                                    <td>{{ transaction.description or transaction.transaction_type.value|capitalize }}</td>
+                                    <td>
+                                        <span class="transaction-type {{ transaction.transaction_type.value }}">
+                                            {{ transaction.transaction_type.value|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>{{ transaction.from_account.name if transaction.from_account else 'N/A' }}</td>
+                                    <td>{{ transaction.to_account.name if transaction.to_account else 'N/A' }}</td>
+                                    <td>
+                                        <span class="transaction-amount {{ transaction.transaction_type.value }}">
+                                            {% if transaction.transaction_type.value in ['withdrawal', 'transfer'] %}
+                                                -
+                                            {% else %}
+                                                +
+                                            {% endif %}
+                                            ${{ "%.2f"|format(transaction.amount) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-status {{ transaction.status }}">
+                                            {{ transaction.status|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="#" class="btn-icon" title="View Details">
+                                                <span class="icon">👁️</span>
+                                            </a>
+                                            <a href="#" class="btn-icon" title="Download Receipt">
+                                                <span class="icon">📄</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="8" class="no-results">No transactions found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if page > 1 %}
+                    <div class="pagination">
+                        {% if transactions.has_prev %}
+                            <a href="{{ url_for('transactions.transactions_list', page=transactions.prev_num) }}" class="pagination-item prev">&laquo; Previous</a>
+                        {% else %}
+                            <span class="pagination-item prev disabled">&laquo; Previous</span>
+                        {% endif %}
+                        
+                        {% for page_num in transactions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == transactions.page %}
+                                    <span class="pagination-item current">{{ page_num }}</span>
+                                {% else %}
+                                    <a href="{{ url_for('transactions.transactions_list', page=page_num) }}" class="pagination-item">{{ page_num }}</a>
+                                {% endif %}
+                            {% else %}
+                                <span class="pagination-item ellipsis">…</span>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if transactions.has_next %}
+                            <a href="{{ url_for('transactions.transactions_list', page=transactions.next_num) }}" class="pagination-item next">Next &raquo;</a>
+                        {% else %}
+                            <span class="pagination-item next disabled">Next &raquo;</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+                <div class="export-options">
+                    <h3>Export Transactions</h3>
+                    <div class="export-buttons">
+                        <a href="#" class="btn btn-secondary">Export as CSV</a>
+                        <a href="#" class="btn btn-secondary">Export as PDF</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Banking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

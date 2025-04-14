@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking App - Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Banking App</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('transactions.accounts_list') }}">Accounts</a></li>
+                    <li><a href="{{ url_for('transactions.transactions_list') }}">Transactions</a></li>
+                    <li><a href="{{ url_for('profile') }}" class="active">Profile</a></li>
+                    <li><a href="{{ url_for('auth.account') }}">Account Settings</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="profile">
+            <div class="container">
+                <h2>User Profile</h2>
+                
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for message in messages %}
+                                <div class="flash-message">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="profile-grid">
+                    <div class="profile-card user-info">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                {% if profile and profile.profile_picture %}
+                                    <img src="{{ profile.profile_picture }}" alt="Profile Picture">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        {{ current_user.username[0].upper() }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="profile-name">
+                                <h3>
+                                    {% if profile %}
+                                        {{ profile.first_name }} {{ profile.last_name }}
+                                    {% else %}
+                                        {{ current_user.username }}
+                                    {% endif %}
+                                </h3>
+                                <p class="user-since">Member since {{ current_user.created_at.strftime('%b %Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Username</span>
+                                <span class="detail-value">{{ current_user.username }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email</span>
+                                <span class="detail-value">{{ current_user.email }}</span>
+                            </div>
+                            {% if profile %}
+                                <div class="detail-item">
+                                    <span class="detail-label">Phone</span>
+                                    <span class="detail-value">{{ profile.phone_number or 'Not provided' }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Address</span>
+                                    <span class="detail-value">
+                                        {% if profile.address %}
+                                            {{ profile.address }}<br>
+                                            {{ profile.city }}, {{ profile.state }} {{ profile.zip_code }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Date of Birth</span>
+                                    <span class="detail-value">
+                                        {% if profile.date_of_birth %}
+                                            {{ profile.date_of_birth.strftime('%b %d, %Y') }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <a href="#" class="btn btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-card account-summary">
+                        <h3>Account Summary</h3>
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ accounts|length }}</span>
+                                <span class="stat-label">Accounts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ recent_transactions|length }}</span>
+                                <span class="stat-label">Transactions</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">${{ total_balance }}</span>
+                                <span class="stat-label">Total Balance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-card activity-log">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="activity-list">
+                            {% for activity in login_history %}
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <span class="icon login">🔑</span>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-info">
+                                            <h4>Login</h4>
+                                            <p class="activity-date">{{ activity.login_time.strftime('%b %d, %Y %H:%M') }}</p>
+                                        </div>
+                                        <div class="activity-meta">
+                                            <span class="activity-ip">{{ activity.ip_address }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="no-activity">
+                                    <p>No recent activity.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="profile-card preferences">
+                        <h3>Preferences</h3>
+                        <div class="preferences-list">
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive email notifications for account activity</p>
+                                </div>
+                                <div class="preference-action">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>SMS Alerts</h4>
+                                    <p>Receive SMS alerts for important transactions</p>
+                                </div>
+                                <div class="preference-action">
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Two-Factor Authentication</h4>
+                                    <p>Add an extra layer of security to your account</p>
+                                </div>
+                                <div class="preference-action">
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Banking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

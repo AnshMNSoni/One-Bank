@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking App - Account Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Banking App</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('transactions.accounts_list') }}">Accounts</a></li>
+                    <li><a href="{{ url_for('transactions.transactions_list') }}">Transactions</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('auth.account') }}" class="active">Account Settings</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-settings">
+            <div class="container">
+                <h2>Account Settings</h2>
+                
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for message in messages %}
+                                <div class="flash-message">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="settings-card">
+                    <h3>Update Account Information</h3>
+                    <form action="{{ url_for('auth.account') }}" method="post">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" value="{{ current_user.username }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">New Password (leave blank to keep current)</label>
+                            <input type="password" id="password" name="password">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password_confirm">Confirm New Password</label>
+                            <input type="password" id="password_confirm" name="password_confirm">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Account</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="settings-card">
+                    <h3>Security Settings</h3>
+                    <div class="security-options">
+                        <div class="security-option">
+                            <div class="option-info">
+                                <h4>Two-Factor Authentication</h4>
+                                <p>Add an extra layer of security to your account</p>
+                            </div>
+                            <div class="option-action">
+                                <button class="btn btn-secondary">Enable</button>
+                            </div>
+                        </div>
+                        
+                        <div class="security-option">
+                            <div class="option-info">
+                                <h4>Login Notifications</h4>
+                                <p>Get notified when someone logs into your account</p>
+                            </div>
+                            <div class="option-action">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="security-option">
+                            <div class="option-info">
+                                <h4>Recent Login Activity</h4>
+                                <p>View your recent login history</p>
+                            </div>
+                            <div class="option-action">
+                                <button class="btn btn-text">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-card danger-zone">
+                    <h3>Danger Zone</h3>
+                    <div class="danger-options">
+                        <div class="danger-option">
+                            <div class="option-info">
+                                <h4>Deactivate Account</h4>
+                                <p>Temporarily disable your account</p>
+                            </div>
+                            <div class="option-action">
+                                <button class="btn btn-warning">Deactivate</button>
+                            </div>
+                        </div>
+                        
+                        <div class="danger-option">
+                            <div class="option-info">
+                                <h4>Delete Account</h4>
+                                <p>Permanently delete your account and all data</p>
+                            </div>
+                            <div class="option-action">
+                                <button class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Banking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
