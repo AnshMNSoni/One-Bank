@@ -23,70 +23,69 @@ def transactions_list():
 @transactions_bp.route('/transactions/new', methods=['GET', 'POST'])
 @login_required
 def new_transaction():
+    from models import Account, Transaction, TransactionType, TransactionCategory
     if request.method == 'POST':
-        transaction_type = request.form.get('transaction_type')
-        from_account_id = request.form.get('from_account_id')
-        to_account_id = request.form.get('to_account_id')
-        amount = float(request.form.get('amount'))
-        description = request.form.get('description')
-        category_id = request.form.get('category_id')
-        
-        # Validate transaction
+        from_account_id = request.form.get("from_account_id")
+        to_account_id = request.form.get("to_account_id")
+        transaction_type = request.form.get("transaction_type")
+        amount = float(request.form.get("amount", 0))
+        description = request.form.get("description")
+
         from_account = Account.query.get(from_account_id)
-        
+        to_account = Account.query.get(to_account_id) if to_account_id else None
+
+        # Validations
         if not from_account or from_account.user_id != current_user.id:
-            flash('Invalid account')
+            flash("Invalid from account.", "danger")
             return redirect(url_for('transactions.new_transaction'))
-        
-        if transaction_type in ['withdrawal', 'transfer'] and from_account.balance < amount:
-            flash('Insufficient funds')
+
+        if transaction_type in ['transfer', 'payment']:
+            if not to_account:
+                flash("You must select a valid recipient account.", "danger")
+                return redirect(url_for('transactions.new_transaction'))
+            if from_account.id == to_account.id:
+                flash("You cannot transfer to the same account.", "danger")
+                return redirect(url_for('transactions.new_transaction'))
+
+        if transaction_type in ['withdrawal', 'transfer', 'payment'] and from_account.balance < amount:
+            flash("Insufficient balance.", "danger")
             return redirect(url_for('transactions.new_transaction'))
-        
-        # Generate reference number
-        reference_number = str(uuid.uuid4())[:8].upper()
-    
-        # Create transaction
-        transaction = Transaction(
-            user_id=current_user.id,
-            from_account_id=from_account_id,
-            to_account_id=to_account_id if transaction_type == 'transfer' else None,
-            amount=amount,
-            transaction_type=TransactionType(transaction_type),
-            category_id=category_id,
-            description=description,
-            reference_number=reference_number
-        )
-        
-        # Update account balances
+
+        # Perform balance update
         if transaction_type == 'deposit':
             from_account.balance += amount
-        elif transaction_type == 'withdrawal':
+        elif transaction_type in ['withdrawal', 'transfer', 'payment']:
             from_account.balance -= amount
-        elif transaction_type == 'transfer':
-            from_account.balance -= amount
-            to_account = Account.query.get(to_account_id)
             if to_account:
                 to_account.balance += amount
-        
-        # Create notification
-        notification = Notification(
+
+        transaction = Transaction(
             user_id=current_user.id,
-            title=f'New {transaction_type.capitalize()}',
-            message=f'You have made a {transaction_type} of ${amount:.2f}',
-            notification_type='info'
+            from_account_id=from_account.id,
+            to_account_id=to_account.id if to_account else None,
+            amount=amount,
+            transaction_type=TransactionType(transaction_type),
+            description=description,
+            date=datetime.utcnow(),
+            reference_number=str(uuid.uuid4())[:8],
+            status="completed"
         )
-        
+
         db_session.add(transaction)
-        db_session.add(notification)
         db_session.commit()
-        
-        flash(f'{transaction_type.capitalize()} completed successfully')
-        return redirect(url_for('transactions.transactions_list'))
-    
-    accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
+        flash("Transaction completed successfully.", "success")
+        return redirect(url_for('dashboard'))
+
+    # On GET: show form
+    from_accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
+    to_accounts = Account.query.filter(Account.is_active == True).all()
     categories = TransactionCategory.query.all()
-    
-    return render_template('new_transaction.html', accounts=accounts, categories=categories)
+    return render_template(
+        'new_transaction.html',
+        from_accounts=from_accounts,
+        to_accounts=to_accounts,
+        categories=categories
+    )
 
 @transactions_bp.route('/accounts')
 @login_required
