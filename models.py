@@ -25,6 +25,8 @@ class AccountType(enum.Enum):
     INVESTMENT = 'investment'
 
 # Models
+
+# Table:1
 class User(UserMixin, Base):
     __tablename__ = 'users'
     
@@ -53,6 +55,7 @@ class User(UserMixin, Base):
     def __repr__(self):
         return f'<User {self.username}>'
 
+# Table:2
 class UserProfile(Base):
     __tablename__ = 'user_profiles'
     
@@ -71,6 +74,7 @@ class UserProfile(Base):
     def __repr__(self):
         return f'<UserProfile {self.first_name} {self.last_name}>'
 
+# Table:3
 class LoginHistory(Base):
     __tablename__ = 'login_history'
     
@@ -84,6 +88,7 @@ class LoginHistory(Base):
     def __repr__(self):
         return f'<LoginHistory {self.user_id} at {self.login_time}>'
 
+# Table:4
 class Account(Base):
     __tablename__ = 'accounts'
     
@@ -102,6 +107,7 @@ class Account(Base):
     def __repr__(self):
         return f'<Account {self.account_number}>'
 
+# Table:5
 class Transaction(Base):
     __tablename__ = 'transactions'
     
@@ -122,6 +128,7 @@ class Transaction(Base):
     def __repr__(self):
         return f'<Transaction {self.reference_number}>'
 
+# Table:6
 class TransactionCategory(Base):
     __tablename__ = 'transaction_categories'
     
@@ -133,6 +140,7 @@ class TransactionCategory(Base):
     def __repr__(self):
         return f'<TransactionCategory {self.name}>'
 
+# Table:7
 class Notification(Base):
     __tablename__ = 'notifications'
     
