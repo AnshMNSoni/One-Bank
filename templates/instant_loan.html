@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Bank - Instant Loan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><h1>One Bank - Banking App</h1></div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-settings">
+            <div class="container">
+                <h2>Instant Loan</h2>
+                <p>Need cash quickly? Apply for an instant personal loan directly through your Banking App account.</p>
+
+                <div class="settings-card">
+                    <h3>How It Works</h3>
+                    <ul>
+                        <li> Instant eligibility check</li>
+                        <li> Minimal documentation</li>
+                        <li> Same-day credit to your account</li>
+                    </ul>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Apply Now</h3>
+                    <form action="{{ url_for('instant_loan') }}" method="POST">
+                        <div class="form-group">
+                            <label for="amount">Loan Amount</label>
+                            <input type="number" name="amount" id="amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="term">Repayment Term (months)</label>
+                            <input type="number" name="term" id="term" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 One Bank. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

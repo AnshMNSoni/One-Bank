@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Bank - Mobile Banking Guide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><h1>One Bank - Banking App</h1></div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-settings">
+            <div class="container">
+                <h2>Mobile Banking Guide</h2>
+                <p>Manage your finances on the go with our intuitive mobile app.</p>
+
+                <div class="settings-card">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li>Download the app from Google Play or the App Store</li>
+                        <li>Log in with your existing credentials</li>
+                        <li>Enable biometric authentication for quick access</li>
+                    </ul>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Instant fund transfers</li>
+                        <li>Bill payments & recharges</li>
+                        <li>Expense tracking</li>
+                        <li>AI budgeting tips</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 One Bank. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

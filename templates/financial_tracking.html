@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Bank - Financial Tracking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><h1>One Bank - Banking App</h1></div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-settings">
+            <div class="container">
+                <h2>Financial Tracking</h2>
+                <p>Track your income, spending, and savings in real-time to stay financially healthy.</p>
+
+                <div class="settings-card">
+                    <h3>Overview</h3>
+                    <ul>
+                        <li>Monthly spending insights</li>
+                        <li>Category-based budgeting</li>
+                        <li>Visual dashboards and charts</li>
+                        <li>Real-time alerts on large expenses</li>
+                    </ul>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Set a Monthly Budget</h3>
+                    <form action="{{ url_for('financial_tracking') }}" method="POST">
+                        <div class="form-group">
+                            <label for="income">Monthly Income</label>
+                            <input type="number" name="income" id="income" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenses">Expected Expenses</label>
+                            <input type="number" name="expenses" id="expenses" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Budget</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Tips to Improve Financial Health</h3>
+                    <ul>
+                        <li>✅ Save at least 20% of your monthly income</li>
+                        <li>✅ Track subscriptions and cancel unused ones</li>
+                        <li>✅ Avoid impulse spending with daily spending limits</li>
+                        <li>✅ Use automated savings plans</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 One Bank. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

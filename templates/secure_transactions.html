@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Bank - Secure Transactions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><h1>One Bank - Banking App</h1></div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-settings">
+            <div class="container">
+                <h2>Secure Transactions</h2>
+                <p>Your safety is our priority. Learn how we keep your data and money safe.</p>
+
+                <div class="settings-card">
+                    <h3>Security Features</h3>
+                    <ul>
+                        <li>Two-Factor Authentication</li>
+                        <li>Fraud Monitoring & Alerts</li>
+                        <li>End-to-End Encryption on Mobile</li>
+                        <li>AI-Powered Transaction Validation</li>
+                    </ul>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Best Practices</h3>
+                    <p>Always keep your credentials private. Don’t share OTPs or passwords with anyone—even if they claim to be from the bank.</p>
+                    <p>Enable login alerts and use strong passwords.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 One Bank. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

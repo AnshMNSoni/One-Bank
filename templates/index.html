@@ -1,90 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>One Bank - Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
     <header>
-        <div class="container">
-            <div class="logo">
-                <h1>One Bank - Banking App</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ url_for('transactions.accounts_list') }}">Accounts</a></li>
-                        <li><a href="{{ url_for('transactions.transactions_list') }}">Transactions</a></li>
-                        <li><a href="{{ url_for('profile') }}">Profile</a></li>
-                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+      <div class="container">
+        <div class="logo">
+          <h1>One Bank - Banking App</h1>
         </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="{{ url_for('index') }}">Home</a>
+            </li>
+            {% if current_user.is_authenticated %}
+              <li>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+              </li>
+              <li>
+                <a href="{{ url_for('transactions.accounts_list') }}">Accounts</a>
+              </li>
+              <li>
+                <a href="{{ url_for('transactions.transactions_list') }}">Transactions</a>
+              </li>
+              <li>
+                <a href="{{ url_for('profile') }}">Profile</a>
+              </li>
+              <li>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+              </li>
+              <li>
+                <a href="{{ url_for('auth.register') }}">Register</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
     </header>
 
     <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h2>Welcome to Banking App</h2>
-                    <p>Your secure and reliable banking solution</p>
-                    {% if not current_user.is_authenticated %}
-                        <div class="cta-buttons">
-                            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
-                            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
-                        </div>
-                    {% else %}
-                        <div class="cta-buttons">
-                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </section>
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <h2>Welcome to Banking App</h2>
+            <p>Your secure and reliable banking solution</p>
+            {% if not current_user.is_authenticated %}
+              <div class="cta-buttons">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
+              </div>
+            {% else %}
+              <div class="cta-buttons">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </section>
 
-        <section class="features">
-            <div class="container">
-                <h2>Our Features</h2>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3>Secure Transactions</h3>
-                        <p>All your transactions are encrypted and secure</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Financial Tracking</h3>
-                        <p>Track your spending and income with detailed reports</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔔</div>
-                        <h3>Instant Notifications</h3>
-                        <p>Get notified instantly for all account activities</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>Mobile Banking</h3>
-                        <p>Access your accounts anytime, anywhere</p>
-                    </div>
-                </div>
+      <section class="features">
+        <div class="container">
+          <h2>Our Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <a href="{{ url_for('secure_transactions') }}" class="feature-card-link">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure Transactions</h3>
+                <p>All your transactions are encrypted and secure</p>
+              </a>
             </div>
-        </section>
+            <div class="feature-card">
+              <a href="{{ url_for('financial_tracking') }}" class="feature-card-link">
+                <div class="feature-icon">📊</div>
+                <h3>Financial Tracking</h3>
+                <p>Track your spending and income with detailed reports</p>
+              </a>
+            </div>
+            <div class="feature-card">
+              <a href="{{ url_for('instant_loan') }}" class="feature-card-link">
+                <div class="feature-icon">💰</div>
+                <h3>Instant Loan</h3>
+                <p>Home Loans • Gold Loans • Life Insurance • Car Loans</p>
+              </a>
+            </div>
+            <div class="feature-card">
+              <a href="{{ url_for('mobile_banking_guide') }}" class="feature-card-link">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Banking</h3>
+                <p>Access your accounts anytime, anywhere</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2025 One Bank. All rights reserved.</p>
-        </div>
+      <div class="container">
+        <p>&copy; 2025 One Bank. All rights reserved.</p>
+      </div>
     </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
+  </body>
 </html>
