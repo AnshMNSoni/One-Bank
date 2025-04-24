@@ -51,6 +51,20 @@ def login():
     
     return render_template('login.html')
 
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            # This is where you would send an email with a reset token
+            flash('A password reset link has been sent to your email.', 'info')
+        else:
+            flash('Email address not found.', 'warning')
+        return redirect(url_for('auth.forgot_password'))
+    
+    return render_template('forgot_password.html')
+
 @auth_bp.route('/logout')
 @login_required
 def logout():
