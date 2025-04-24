@@ -53,6 +53,26 @@ def profile():
     user_profile = UserProfile.query.filter_by(user_id=current_user.id).first()
     return render_template('profile.html', profile=user_profile)
 
+@app.route('/instant-loan')
+@login_required
+def instant_loan():
+    return render_template('instant_loan.html')
+
+@app.route('/secure-transactions')
+@login_required
+def secure_transactions():
+    return render_template('secure_transactions.html')
+
+@app.route('/mobile-banking-guide')
+@login_required
+def mobile_banking_guide():
+    return render_template('mobile_banking_guide.html')
+
+@app.route('/financial-tracking')
+@login_required
+def financial_tracking():
+    return render_template('financial_tracking.html')
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
