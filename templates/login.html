@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banking App - Login</title>
+    <title>One Bank - Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <header>
         <div class="container">
             <div class="logo">
-                <h1>Banking App</h1>
+                <h1>One Bank - Banking App</h1>
             </div>
             <nav>
                 <ul>
@@ -60,7 +60,7 @@
                     </form>
                     
                     <div class="auth-links">
-                        <a href="#">Forgot password?</a>
+                        <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
                         <span>Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></span>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 Banking App. All rights reserved.</p>
+            <p>&copy; 2025 One Bank. All rights reserved.</p>
         </div>
     </footer>
 
