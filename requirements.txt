@@ -4,3 +4,4 @@ SQLAlchemy>=2.0
 Flask-SQLAlchemy>=3.1
 Werkzeug>=2.3
 python-dotenv>=1.0
+gunicorn
