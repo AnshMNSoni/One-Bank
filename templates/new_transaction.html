@@ -30,6 +30,17 @@
         <section class="new-transaction-section">
             <div class="container">
                 <h2>New Transaction</h2>
+                
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for message in messages %}
+                                <div class="flash-message">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
                 <form method="POST" action="{{ url_for('transactions.new_transaction') }}">
                     <div class="form-group">
                         <label for="type">Transaction Type</label>
@@ -42,19 +53,24 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="from_account">From Account</label>
+                        <label for="from_account_id">From Account</label>
                         <select id="from_account_id" name="from_account_id" required>
                             {% for account in from_accounts %}
-                              <option value="{{ account.id }}">{{ account.name }} - {{ account.account_number }}</option>
+                              <option value="{{ account.id }}">{{ account.name or account.account_type.value + ' Account' }} - {{ account.account_number }} (${{ account.balance }})</option>
+                            {% else %}
+                              <option disabled>No accounts available</option>
                             {% endfor %}
                           </select>
                     </div>
 
                     <div class="form-group">
                         <label for="to_account_id">To Account</label>
-                        <select id="to_account_id" name="to_account_id" required>
+                        <select id="to_account_id" name="to_account_id">
+                            <option value="">Select an account</option>
                             {% for account in to_accounts %}
-                              <option value="{{ account.id }}">{{ account.name }} - {{ account.account_number }}</option>
+                              <option value="{{ account.id }}">{{ account.name or account.account_type.value + ' Account' }} - {{ account.account_number }}</option>
+                            {% else %}
+                              <option disabled>No accounts available</option>
                             {% endfor %}
                           </select>
                     </div>

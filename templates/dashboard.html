@@ -70,7 +70,7 @@
                         {% for account in accounts %}
                           <div class="account-balance">
                             <div class="account-info">
-                              <h4>{{ account.name }}</h4>
+                              <h4>{{ account.name or account.account_type.value + ' Account' }}</h4>
                               <p class="account-number">{{ account.account_number }}</p>
                               <p class="account-type">{{ account.account_type.value }}</p>
                             </div>
@@ -136,19 +136,23 @@
                         <input type="hidden" name="transaction_type" value="transfer" />
 
                         <div class="form-group">
-                          <label for="from_account_id">From Account</label>
-                          <select id="from_account_id" name="from_account_id" required>
-                            {% for account in accounts %}
-                              <option value="{{ account.id }}">{{ account.name }} ({{ account.balance }})</option>
+                          <label for="from_account">From Account</label>
+                          <select id="from_account" name="from_account_id" required>
+                            {% for account in from_accounts %}
+                              <option value="{{ account.id }}">{{ account.name or account.account_type.value + ' Account' }} (${{ account.balance }})</option>
+                            {% else %}
+                              <option disabled>No accounts available</option>
                             {% endfor %}
                           </select>
                         </div>
 
                         <div class="form-group">
-                          <label for="to_account_id">To Account</label>
-                          <select id="to_account_id" name="to_account_id" required>
-                            {% for account in accounts %}
-                              <option value="{{ account.id }}">{{ account.name }}</option>
+                          <label for="to_account">To Account</label>
+                          <select id="to_account" name="to_account_id" required>
+                            {% for account in to_accounts %}
+                              <option value="{{ account.id }}">{{ account.name or account.account_type.value + ' Account' }} ({{ account.account_number }})</option>
+                            {% else %}
+                              <option disabled>No accounts available</option>
                             {% endfor %}
                           </select>
                         </div>

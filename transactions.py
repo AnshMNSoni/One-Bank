@@ -4,10 +4,10 @@ from datetime import datetime
 import uuid
 from models import db_session, Account, Transaction, TransactionCategory, Notification, TransactionType, AccountType
 
-transactions_bp = Blueprint('transactions', __name__)
+transactions_bp = Blueprint('transactions', __name__, url_prefix='/transactions')
 
 # Routes
-@transactions_bp.route('/transactions')
+@transactions_bp.route('/')
 @login_required
 def transactions_list():
     page = request.args.get('page', 1, type=int)
@@ -20,10 +20,9 @@ def transactions_list():
 
     return render_template('transactions.html', transactions=transactions, page=page, total=total, per_page=per_page)
 
-@transactions_bp.route('/transactions/new', methods=['GET', 'POST'])
+@transactions_bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new_transaction():
-    from models import Account, Transaction, TransactionType, TransactionCategory
     if request.method == 'POST':
         from_account_id = request.form.get("from_account_id")
         to_account_id = request.form.get("to_account_id")
@@ -31,6 +30,7 @@ def new_transaction():
         amount = float(request.form.get("amount", 0))
         description = request.form.get("description")
 
+        # Retrieve from and to account
         from_account = Account.query.get(from_account_id)
         to_account = Account.query.get(to_account_id) if to_account_id else None
 
@@ -59,6 +59,7 @@ def new_transaction():
             if to_account:
                 to_account.balance += amount
 
+        # Create transaction record
         transaction = Transaction(
             user_id=current_user.id,
             from_account_id=from_account.id,
@@ -67,10 +68,11 @@ def new_transaction():
             transaction_type=TransactionType(transaction_type),
             description=description,
             date=datetime.utcnow(),
-            reference_number=str(uuid.uuid4())[:8],
+            reference_number=str(uuid.uuid4())[:8],  # Generating a unique reference number
             status="completed"
         )
 
+        # Commit the transaction to the database
         db_session.add(transaction)
         db_session.commit()
         flash("Transaction completed successfully.", "success")
@@ -80,6 +82,11 @@ def new_transaction():
     from_accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
     to_accounts = Account.query.filter(Account.is_active == True).all()
     categories = TransactionCategory.query.all()
+    
+    # Debug: Print account information to verify data
+    print(f"New Transaction - From accounts: {[(a.id, a.name, a.account_number, a.is_active) for a in from_accounts]}")
+    print(f"New Transaction - To accounts: {[(a.id, a.name, a.account_number, a.is_active) for a in to_accounts]}")
+    
     return render_template(
         'new_transaction.html',
         from_accounts=from_accounts,
@@ -91,6 +98,7 @@ def new_transaction():
 @login_required
 def accounts_list():
     accounts = Account.query.filter_by(user_id=current_user.id).all()
+    print(f"Accounts List - User accounts: {[(a.id, a.name, a.account_number, a.is_active) for a in accounts]}")
     return render_template('account.html', accounts=accounts)
 
 @transactions_bp.route('/accounts/new', methods=['GET', 'POST'])
@@ -109,7 +117,8 @@ def new_account():
             account_number=account_number,
             account_type=AccountType(account_type),
             name=name,
-            balance=0.0
+            balance=0.0,
+            is_active=True
         )
         
         db_session.add(account)
@@ -119,6 +128,30 @@ def new_account():
         return redirect(url_for('transactions.accounts_list'))
     
     return render_template('new_account.html')
+
+@transactions_bp.route('/accounts/update/<int:account_id>', methods=['POST'])
+@login_required
+def update_account(account_id):
+    account = Account.query.get_or_404(account_id)
+    
+    # Ensure the account belongs to the current user
+    if account.user_id != current_user.id:
+        flash('You do not have permission to update this account', 'danger')
+        return redirect(url_for('transactions.accounts_list'))
+    
+    # Update account name if provided
+    name = request.form.get('name')
+    if name:
+        account.name = name
+    
+    # Update active status if provided
+    is_active = request.form.get('is_active')
+    if is_active is not None:
+        account.is_active = is_active == 'true'
+    
+    db_session.commit()
+    flash('Account updated successfully')
+    return redirect(url_for('transactions.accounts_list'))
 
 @transactions_bp.route('/notifications')
 @login_required
